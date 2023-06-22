@@ -33,7 +33,8 @@ handle_options() {
           exit 1
         fi
 
-        IN=$(extract_argument $@)
+        IN_REL=$(extract_argument $@)
+        IN=$(realpath $IN_REL)
         shift
         ;;
         
@@ -44,7 +45,8 @@ handle_options() {
           exit 1
         fi
 
-        INDEX=$(extract_argument $@)
+        INDEX_REL=$(extract_argument $@)
+        INDEX=$(realpath $INDEX_REL)
         shift
         ;;
 
@@ -55,7 +57,12 @@ handle_options() {
           exit 1
         fi
 
-        OUT_FOLDER=$(extract_argument $@)
+        OUT_FOLDER_REL=$(extract_argument $@)
+        if [ ! -d $OUT_FOLDER_REL ]
+            then 
+             mkdir $OUT_FOLDER_REL
+        fi  
+        OUT_FOLDER=$(realpath $OUT_FOLDER_REL)
         shift
         ;;
       *)
@@ -111,6 +118,7 @@ declare -A dict
 while IFS=' ' read -r value key; do
     dict[$key]=$value
 done < $INDEX
+
 
 
 # load file > find primer sequence > check for length > find index, barcode and promoter > store by index
