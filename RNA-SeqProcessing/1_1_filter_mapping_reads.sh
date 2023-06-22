@@ -72,6 +72,12 @@ handle_options() {
 # Main script execution
 handle_options "$@"
 
+# mandatory arguments
+if [ ! "$READ1" ] || [ ! "$READ2" ] || [ ! "$OUT_FOLDER" ]; then
+  echo "arguments -i, -I and -o must be provided" >&2;
+  usage; exit 1
+fi
+
 
 if [ ! -d $OUT_FOLDER ] 
 then 
