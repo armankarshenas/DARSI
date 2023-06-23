@@ -1,4 +1,6 @@
-#!/opt/homebrew/bin/bash -i 
+#!/opt/homebrew/bin/bash -i
+# Find working directiory
+
 
 # Function to display script usage
 usage() {
@@ -6,7 +8,6 @@ usage() {
  echo "Options:"
  echo " -h, --help    Display this help message"
  echo " -i, --read1   File path to read 1"
- echo " -I, --read2   File path to read 2"
  echo " -o, --out     File path to output"
 }
 
@@ -33,21 +34,11 @@ handle_options() {
           exit 1
         fi
 
-        READ1=$(extract_argument $@)
-
+        READ1_REL=$(extract_argument $@)
+        READ1=$(realpath $READ1_REL)
         shift
         ;;
-      -I | --read2*)
-        if ! has_argument $@; then
-          echo "Read 2 not specified." >&2
-          usage
-          exit 1
-        fi
 
-        READ2=$(extract_argument $@)
-
-        shift
-        ;;
       -o | --out*)
         if ! has_argument $@; then
           echo "Output directory not specified." >&2
@@ -78,20 +69,22 @@ handle_options() {
 handle_options "$@"
 
 # mandatory arguments
-if [ ! "$READ1" ] || [ ! "$READ2" ] || [ ! "$OUT_FOLDER" ]; then
-  echo "arguments -i, -I and -o must be provided" >&2;
+if [ ! "$READ1" ] || [ ! "$OUT_FOLDER" ]; then
+  echo "arguments -i and -o must be provided" >&2;
   usage; exit 1
 fi
 
-
+# make output folder if not existing
 if [ ! -d $OUT_FOLDER ] 
 then 
     mkdir $OUT_FOLDER
 fi
 
-OUT=$OUT_FOLDER"/mapping_merged.fastq"
+# Find file name
+filename="${READ1##*/}"
+filename="${filename%.*}" 
+
 
 HTML=$OUT_FOLDER"/mapping_fastp_report.html"
 JSON=$OUT_FOLDER"/mapping_fastp_report.json"
-
-fastp --in1 $READ1 --in2 $READ2 --merged_out $OUT  --verbose --html $HTML --json $JSON --report_title $html_report --thread '6' --merge --overlap_len_require '3' --n_base_limit '0' 
+fastp -i $READ1 -o $OUT_FOLDER/test_filtered.fastq  --verbose --html $HTML --json $JSON --report_title $html_report --thread '12'  --average_qual '30'  --n_base_limit '0' --unqualified_percent_limit '10'

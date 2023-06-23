@@ -1,0 +1,4 @@
+CAAG LB_DNA
+AGAG LB_RNA
+ATGC heatshock_DNA
+TCTA heatshock_RNA
