@@ -1,5 +1,10 @@
 function [tb_test,tb_train,tb_valid] = PartitionDataSet(frac_train,frac_test,dataset)
-% Shuffling the dataset before partitioning 
+% PartitionDataSet shuffles the dataset before partitioning and 
+% divides the dataset to train, test, and validation subsets. 
+
+% Written by A. Karshenas -- Feb 25, 2024
+%----------------------------------------------------
+
 index = randperm(size(dataset,1));
 dataset = dataset(index,:);
 
