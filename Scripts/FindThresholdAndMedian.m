@@ -1,4 +1,8 @@
 function [th_up,th_down,th_med_down,th_med_up] = FindThresholdAndMedian(tb_gene,tb_col,act_thresh)
+% FindThresholdAndMedian finds the threshold and median for binning RNA counts. 
+
+% Written by A. Karshenas -- Feb 25, 2024
+%----------------------------------------------------
     tb_col_name = string(tb_gene.Properties.VariableNames);
     tb_col_name = tb_col_name == tb_col;
     vec_values = table2array(tb_gene(:,tb_col_name));
