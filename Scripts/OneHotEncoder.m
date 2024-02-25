@@ -1,5 +1,8 @@
 function seq_read = OneHotEncoder(Seq)
+% OneHotEncoder assigns a numerical value to each nt in the input sequence Seq
 
+% Written by A. Karshenas -- Feb 25, 2024
+%----------------------------------------------------
 seq_read = zeros(4,length(Seq));
 for i=1:length(Seq)
     switch Seq(i)
