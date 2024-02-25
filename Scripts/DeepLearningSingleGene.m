@@ -1,7 +1,9 @@
-%% Info
-% This script 1: loads the dataset, 2: sets the network architechure, 3:
+% DeepLearningSingleGene 1: loads the dataset, 2: sets the network architechure, 3:
 % train the network, 4: evaluate the model, and 5: plots any neccessary
 % figures
+
+% Written by A. Karshenas -- Feb 25, 2024
+%----------------------------------------------------
 
 %% Specifications 
 
