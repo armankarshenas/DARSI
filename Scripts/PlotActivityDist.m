@@ -1,8 +1,11 @@
-%% Info
-% This script generats plots for the training data, performs ANOVA, and
+% PlotActivityDist generats plots for the training data, performs ANOVA, and
 % finds the optimal point in the parameter space 
 
-%% Spec
+% Written by A. Karshenas -- Feb 25, 2024
+%----------------------------------------------------
+
+
+%% Specifications 
 addpath(genpath("/media/zebrafish/Data2/Arman/PhD/Reg-seq/Matlab"))
 Path_to_data = "/media/zebrafish/Data2/Arman/Data/LB_dataset/0.20";
 Path_to_save = Path_to_data + "/ANOVA";
