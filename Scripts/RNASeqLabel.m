@@ -1,5 +1,10 @@
 function tb_output = RNASeqLabel(tb_input,act_thresh)
-% This function labels the ct_RNA to up regulatory, down regulatory and neutral
+% RNASeqLabel creates bins and labels each RNA count to a discrete 
+% bins and returns a table of sequences and their corresponding RNA count bin
+
+% Written by A. Karshenas -- Feb 22, 2024
+%----------------------------------------------------
+
 
 %% Main body code 
     tb = tb_input;
