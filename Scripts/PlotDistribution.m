@@ -1,4 +1,8 @@
 function [] = PlotDistribution(tb_gene,OH_gene,Path_to_save,name)
+% PlotDistribution plots histograms for the RNA counts and groups them based on the RNA count bin
+
+% Written by A. Karshenas -- Feb 25, 2024
+%----------------------------------------------------
     a1 = OH_gene.RNA_label == 1;
     a0 = OH_gene.RNA_label == 0;
     an = OH_gene.RNA_label == -1;
