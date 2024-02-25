@@ -1,6 +1,10 @@
 function f1_measure = F1_measure(labels,pred,n_class)
-% This function computes an F1 score for every possible pair of classes
-% using the test and predicted labels 
+% F1_measure computes an f1 score for every possible pair of classes 
+% using the test and predicted labels. It reutnrs a structure with length 
+% of all possible pairs (i.e 2 choose K for K classes) 
+% Written by A. Karshenas -- Feb 25, 2024
+%----------------------------------------------------
+
 
 labels = double(string(labels));
 pred = double(string(pred));
