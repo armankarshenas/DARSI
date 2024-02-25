@@ -1,6 +1,8 @@
-%% Info
-% This script 1: loads the dataset, 2: sets the network architechure, 3:
+% CrossValidation 1: loads the dataset, 2: sets the network architechure, 3:
 % train the network, 4: evaluate the model for cross validation
+
+% Written by A. Karshenas -- Feb 25, 2024
+%----------------------------------------------------
 
 %% Specifications 
 
