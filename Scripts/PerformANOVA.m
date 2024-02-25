@@ -1,5 +1,10 @@
 function [measure_dist] = PerformANOVA(tb_gene,OH_gene,Path_to_save,name)
-    % Performing one-way ANOVA
+% PerformANOVA performs an analysis of variance for binning algorithm 
+
+% Written by A. Karshenas -- Feb 25, 2024
+%----------------------------------------------------
+
+
     [~,~,stats] = anova1(tb_gene.ct_RNA,OH_gene.RNA_label);
     name = split(name,"_");
     name_1 = name{1} + "_anova1.png";
