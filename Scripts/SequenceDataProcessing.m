@@ -1,7 +1,12 @@
-%% Sequence-expression data processing 
+
+% SequenceDataProcessing
 % This script reads in CSV file from Rob Philips' group at Caltech and
 % reshapes sequences to images and exports them into a new directory along
 % with the corresponding expression level
+
+% Written by A. Karshenas -- Feb 22, 2024
+%----------------------------------------------------
+
  
 %% Specifications 
 addpath(genpath("/media/zebrafish/Data2/Arman/PhD/Reg-seq/Matlab/Scripts"))
