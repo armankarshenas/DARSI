@@ -1,5 +1,8 @@
-%% Activation maps
-% This script generates saliency maps for models and inputs
+% SaliencyMaps generates saliency maps for models and inputs
+
+% Written by A. Karshenas -- Feb 22, 2024
+%----------------------------------------------------
+
 clear
 clc
 close all
