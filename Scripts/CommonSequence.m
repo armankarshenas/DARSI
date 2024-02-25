@@ -1,4 +1,8 @@
 function [seq_out] = CommonSequence(seq_in)
+% CommonSequence finds the WT sequence as the consensus sequence 
+
+% Written by A. Karshenas -- Feb 25, 2024
+%----------------------------------------------------
 if ~istable(seq_in)
     seq_in = struct2table(seq_in);
 end
