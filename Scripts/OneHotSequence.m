@@ -1,5 +1,10 @@
 function [] = OneHotSequence(Path_to_data,Path_to_save)
-% This function generates matrices for each sequence as a one-hot encoder
+% OneHotSequence loads fasta files and generates a structure to store 
+% all the matrices generated for each sequence 
+
+% Written by A. Karshenas -- Feb 25, 2024
+%----------------------------------------------------
+
 %% Main code 
 cd(Path_to_data)
 TXT_files = dir(fullfile(pwd,"*.txt"));
