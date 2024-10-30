@@ -1,10 +1,5 @@
 function [] = OneHotSequence(Path_to_data,Path_to_save)
-% OneHotSequence loads fasta files and generates a structure to store 
-% all the matrices generated for each sequence 
-
-% Written by A. Karshenas -- Feb 25, 2024
-%----------------------------------------------------
-
+% This function generates matrices for each sequence as a one-hot encoder
 %% Main code 
 cd(Path_to_data)
 TXT_files = dir(fullfile(pwd,"*.txt"));
@@ -22,17 +17,16 @@ for i=1:length(FST_files)
     cd(path_name);
     for j=1:height(tb)
         seq_read = OneHotEncoder(fst(j).Sequence);
-        WriteImageToTIFF(seq_read,path_name,string(tb.gene{j}),tb.label_RNA(j),string(tb.Header{j}));
+        WriteImageToTIFF(seq_read,path_name,string(tb.gene{j}),tb.label_RNA_DNA(j),string(tb.Header{j}));
         OneHot(j).data = seq_read;
         OneHot(j).index = fst(j).Header;
-        OneHot(j).RNA_label = tb.label_RNA(j);
-        OneHot(j).DNA_label = tb.label_DNA(j);
+        OneHot(j).RNA_label = tb.label_RNA_DNA(j);
         waitbar(j/height(tb))
     end
     cd(Path_to_data)
     name = split(FST_files(i).name,".fa");
     name = name{1};
     name = name + ".mat";
-    save(name,'OneHot');
+    save(name,'OneHot','-v7.3');
 end
 end
