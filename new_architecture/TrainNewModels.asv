@@ -1,0 +1,74 @@
+
+addpath(genpath("~/Desktop/DARSI/Scripts"))
+Path_to_data = "~/Desktop/DARSI/";
+Path_to_save = "~/Desktop/DARSI/new_model/";
+
+% Reading the data 
+cd(Path_to_data)
+tb_train = readtable('Train_activity.txt');
+tb_test = readtable('Test_activity.txt');
+tb_valid = readtable('Valid_activity.txt');
+TB = vertcat(tb_train,tb_test,tb_valid);
+
+
+Genes = unique(TB.gene);
+for i = 1:length(Genes)
+TB = TB(string(TB.gene)==Genes{i},:);
+
+sequences = TB.sequence;
+labels = TB.label_RNA_DNA;
+
+numSequences = length(sequences);
+inputData = zeros(4, 160, 1,numSequences);
+
+for j = 1:numSequences
+    sequence = sequences{j};
+    inputData(:,:,:,j) = dna2onehot(sequence);
+end
+
+
+[trainData, trainLabels, valData, valLabels, testData, testLabels] = splitData(inputData, labels);
+
+trainData = reshape(trainData,[4,160,1,length(trainData)]);
+trainLabels = categorical(trainLabels);
+
+valData = reshape()
+
+
+[balancedData, balancedLabels] = balanceData(trainData, trainLabels);
+
+layers = [
+    imageInputLayer([4 160 1]) % Input layer for one-hot encoded DNA
+    convolution2dLayer([4 5], 32, 'Stride', [1 1], 'Padding', 'same')
+    batchNormalizationLayer
+    reluLayer
+    maxPooling2dLayer([1 2], 'Stride', 2)
+    
+    convolution2dLayer([1 5], 64, 'Stride', [1 1], 'Padding', 'same')
+    batchNormalizationLayer
+    reluLayer
+    maxPooling2dLayer([1 2], 'Stride', 2)
+    
+    fullyConnectedLayer(3) % 3 classes for the binned expression levels
+    softmaxLayer
+    classificationLayer
+];
+
+% Specify training options
+options = trainingOptions('adam', ...
+    'MaxEpochs', 20, ...
+    'MiniBatchSize', 32, ...
+    'Shuffle', 'every-epoch', ...
+    'Plots', 'training-progress', ...
+    'Verbose', false,'ValidationData',{valData,categorical(valLabels)},'ValidationFrequency',20,'ValidationPatience',30);
+
+balancedData = reshape(balancedData,[4,160,1,length(balancedData)]);
+
+net = trainNetwork(balancedData, categorical(balancedLabels), layers, options);
+
+YPred = classify(net, testData);
+
+accuracy = sum(YPred == categorical(testLabels)) / numel(testLabels);
+disp(['Test Accuracy: ', num2str(accuracy * 100), '%']);
+
+end
