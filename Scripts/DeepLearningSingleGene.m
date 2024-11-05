@@ -7,9 +7,9 @@
 
 %% Specifications 
 
-addpath(genpath("/media/zebrafish/Data2/Arman/PhD/Reg-seq/Matlab/Scripts"))
-Path_to_data = "/media/zebrafish/Data2/Arman/Data/LB_dataset/NoBias/0.15/imgs";
-Path_to_save = "/media/zebrafish/Data2/Arman/Data/LB_dataset/NoBias/0.15/Model/Single_genes";
+addpath(genpath("~/Desktop/DARSI/Scripts"))
+Path_to_data = "~/Desktop/DARSI/imgs";
+Path_to_save = "~/Desktop/DARSI/new_run_plots/model";
 
 
 %% Main code
@@ -46,7 +46,7 @@ layers = [
     reluLayer("Name","relu_5")
     dropoutLayer(0.4,"Name","dropout_2")
     softmaxLayer("Name","softmax")
-    classificationLayer("Name","classoutput")];
+    classificationLayer];
 ACC = struct();
 for i=3:length(Genes)
 
@@ -55,14 +55,50 @@ imds_train = imageDatastore(Path_to_data + "/Train"+"/"+Genes(i).name,'IncludeSu
 imds_test = imageDatastore(Path_to_data + "/Test"+"/"+Genes(i).name,'IncludeSubfolders',true,'LabelSource','foldernames');
 imds_valid = imageDatastore(Path_to_data+"/Valid"+"/"+Genes(i).name,'IncludeSubfolders',true,'LabelSource','foldernames');
 
+X_train = zeros(4,160,1,length(imds_train.Labels));
+Y_train = imds_train.Labels;
+for j=1:length(Y_train)
+    X_train(:,:,:,i) = readimage(imds_train,j);
+end
+X_test = zeros(4,160,1,length(imds_test.Labels));
+Y_test = imds_test.Labels;
+for j=1:length(Y_test)
+    X_test(:,:,:,i) = readimage(imds_test,j);
+end
+X_valid = zeros(4,160,1,length(imds_valid.Labels));
+Y_valid = imds_valid.Labels;
+for j=1:length(Y_valid)
+    X_valid(:,:,:,j) = readimage(imds_valid,j);
+end
+
+% Calculate class weights
+label_counts = countcats(categorical(imds_train.Labels));
+total_labels = sum(label_counts);
+class_weights = total_labels ./ (length(label_counts) * label_counts);
 % Specifying training options 
-opts = trainingOptions("sgdm",...
-    "ExecutionEnvironment","auto",...
+
+%{
+opts = trainingOptions("adam",...
+    "ExecutionEnvironment","GPU",...
     "InitialLearnRate",0.01,...
     "Shuffle","every-epoch",...
     'LearnRateDropFactor',0.2,'LearnRateDropPeriod',5,'LearnRateSchedule','piecewise','ValidationPatience',30,'OutputNetwork','best-validation-loss',...
     "Plots","none",...
     "ValidationData",imds_valid,'ValidationFrequency',20);
+    %}
+options = trainingOptions('adam', ...
+    'InitialLearnRate', 1e-3, ...
+    'MaxEpochs', 50, ...
+    'MiniBatchSize', 64, ...
+    'ValidationData', imds_valid, ...
+    'ValidationFrequency', 20, ...
+    'Plots', 'training-progress',...
+    'OutputNetwork','best-validation-loss'); 
+
+Loss_fn = @(Y,T) crossentropy(Y,T, ...
+    NormalizationFactor="all-elements", ...
+    Weights=class_weights, ...
+    WeightsFormat="C")*3;
 
 % Training the network  
 cd(Path_to_save)
@@ -74,7 +110,7 @@ else
 end
 
 diary training_log.txt
-[net, traininfo] = trainNetwork(imds_test,layers,opts);
+[net, traininfo] = trainNetwork(imds_train,layers,options);
 diary off
 
 % Saving the model

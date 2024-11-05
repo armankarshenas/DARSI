@@ -7,14 +7,13 @@ clear
 clc
 close all
 %% Specifications
-addpath(genpath("/media/zebrafish/Data2/Arman/PhD/Reg-seq/Matlab"));
-Path_to_data = "/media/zebrafish/Data2/Arman/Data/LB_dataset/0.10/imgs";
-Path_to_model = "/media/zebrafish/Data2/Arman/Data/LB_dataset/0.10/Model/Single_genes";
-
+addpath(genpath("~/Desktop/DARSI/Scripts"));
+Path_to_data = "~/Desktop/DARSI/imgs";
+Path_to_model = "~/Desktop/DARSI/new_run_plots/model";
 %% Main code
 cd(Path_to_model)
 Genes = dir(pwd);
-for i=5:length(Genes)
+for i=7:length(Genes)
     waitbar(i/length(Genes));
     cd(Path_to_model+"/"+Genes(i).name);
     net = load(Genes(i).name+"_trained_network.mat");
@@ -51,6 +50,7 @@ act = reshape(act,[sz(1) sz(2) 1 sz(3)]);
     OneHot = struct2table(OneHot);
     tb = OneHot(contains(string(OneHot.index),Genes(i).name),:);
     Seq = Seq(contains(string(Seq.Header),Genes(i).name),:);
+    clear OneHot
     gradMap = struct();
     inputsz = net.Layers(1).InputSize;
     gradcamMap = [];
@@ -59,9 +59,8 @@ act = reshape(act,[sz(1) sz(2) 1 sz(3)]);
 
         I = cell2mat(tb{j,1});
         try
-            gradMap(counter).Map = gradCAM(net,I,YPred(j),'ReductionLayer','softmax','FeatureLayer','maxpool_2','ExecutionEnvironment','gpu');
+            gradMap(counter).Map = gradCAM(net,I,YPred(j),'ReductionLayer','softmax','FeatureLayer','maxpool_2','ExecutionEnvironment','cpu');
             gradMap(counter).RNALabel = tb.RNA_label(j);
-            gradMap(counter).DNALabel = tb.DNA_label(j);
             gradMap(counter).Index = string(tb.index(j));
             gradcamMap(:,:,counter) = I;
             counter = counter+1;
@@ -71,54 +70,97 @@ act = reshape(act,[sz(1) sz(2) 1 sz(3)]);
     end
     gradMapctr = struct2table(gradMap);
     I = [];
-    RNA_1 = gradMapctr((gradMapctr.RNALabel) == 1,:);
-    for k=1:height(RNA_1)
-        I(:,:,k) = cell2mat(RNA_1.Map(k));
+    RNA_3 = gradMapctr((gradMapctr.RNALabel) == 3,:);
+    for k=1:height(RNA_3)
+        I(:,:,k) = cell2mat(RNA_3.Map(k));
     end
     SalientMaps = struct();
-    SalientMaps(1).Name = "Increased Expression";
+    SalientMaps(1).Name = "High Expression";
     SalientMaps(1).Map = mean(I,3);
     SalientMaps(1).data = I;
 
     I = [];
-    RNA_0 = gradMapctr((gradMapctr.RNALabel) == 0,:);
-    for k=1:height(RNA_0)
-        I(:,:,k) = cell2mat(RNA_0.Map(k));
+    RNA_2 = gradMapctr((gradMapctr.RNALabel) == 2,:);
+    for k=1:height(RNA_2)
+        I(:,:,k) = cell2mat(RNA_2.Map(k));
     end
-    SalientMaps(2).Name = "WT Expression";
+    SalientMaps(2).Name = "Low Expression";
     SalientMaps(2).Map = mean(I,3);
     SalientMaps(2).data = I;
 
     I=[];
-    RNA_n1 = gradMapctr((gradMapctr.RNALabel) == -1,:);
-    for k=1:height(RNA_n1)
-        I(:,:,k) = cell2mat(RNA_n1.Map(k));
+    RNA_1 = gradMapctr((gradMapctr.RNALabel) == 1,:);
+    for k=1:height(RNA_1)
+        I(:,:,k) = cell2mat(RNA_1.Map(k));
     end
-    SalientMaps(3).Name = "Decreased Expression";
+    SalientMaps(3).Name = "No Expression";
     SalientMaps(3).Map = mean(I,3);
     SalientMaps(3).data = I;
 
-    SalientMaps(4).Name = "All Expression Data";
-    SalientMaps(4).Map = mean(cat(3,SalientMaps(1).Map,SalientMaps(2).Map,SalientMaps(3).Map),3);
-    SalientMaps(4).data = gradcamMap;
 
     % Finding the most common sequence from the sequences used
     commonseq = CommonSequence(Seq);
-
-    PlotSalientMap(SalientMaps(1).Map,hot,commonseq,Genes(i).folder+"/"+Genes(i).name,SalientMaps(1).Name);
-    PlotSalientMap(SalientMaps(2).Map,hot,commonseq,Genes(i).folder+"/"+Genes(i).name,SalientMaps(2).Name);
-    PlotSalientMap(SalientMaps(3).Map,hot,commonseq,Genes(i).folder+"/"+Genes(i).name,SalientMaps(3).Name);
-    PlotSalientMap(SalientMaps(4).Map,hot,commonseq,Genes(i).folder+"/"+Genes(i).name,SalientMaps(4).Name);
+    xlabel_name = cellstr(commonseq(:));
+    ylabel_name = cellstr(["A","T","C","G"]);
+    
+    cd(Path_to_model+"/"+Genes(i).name);
+    
     figure();
-    plot(max(SalientMaps(1).Map),'LineWidth',2,'Color','r','DisplayName',SalientMaps(1).Name);
+    subplot(3,1,1)
+    imagesc(SalientMaps(1).Map)
+    colormap("jet")
+    colorbar;
+    title("Saliency Map for Sequences with High Expression")
+    xticks(1:1:160);  
+    xticklabels(xlabel_name); 
+    xtickangle(0);
+    yticklabels(ylabel_name)
     hold on;
-    plot(max(SalientMaps(2).Map),'LineWidth',2,'Color','b','DisplayName',SalientMaps(2).Name);
+    subplot(3,1,2)
+    imagesc(SalientMaps(2).Map);
+    colormap("jet")
+    colorbar;
+    title("Saliency Map for Sequences with Low Expression")
+    xticks(1:1:160);  
+    xticklabels(xlabel_name); 
+    xtickangle(0);
+    yticklabels(ylabel_name)
     hold on;
-    plot(max(SalientMaps(3).Map),'LineWidth',2,'Color','k','DisplayName',SalientMaps(3).Name);
+    
+    subplot(3,1,3)
+    imagesc(SalientMaps(3).Map);
+    colormap("jet")
+    colorbar;
+    title("Saliency Map for Sequences with Zero Expression")
+    xticks(1:1:160);  
+    xticklabels(xlabel_name); 
+    xtickangle(0);
+    yticklabels(ylabel_name)
     hold on;
-    plot(max(SalientMaps(4).Map),'LineWidth',2,'Color','m','DisplayName',SalientMaps(4).Name);
-    hold on;
-    saveas(gcf,"PredictedBindingSites.fig");
+    
+    saveas(gcf,"SaliencyMap.fig");
+    saveas(gcf,"SaliencyMap.eps","epsc")
+    saveas(gcf,"SaliencyMap.png")
     close
+
     save("SalientMapData.mat",'gradMap','SalientMaps');
+
+    Final_saliency_map = cat(3, SalientMaps(1).Map, SalientMaps(2).Map, SalientMaps(3).Map);
+    Final_saliency_map = mean(Final_saliency_map,3);
+    figure()
+    imagesc(Final_saliency_map)
+    colormap("jet")
+    colorbar;
+    title("Saliency Map for Sequences with Zero Expression")
+    xticks(1:1:160);  
+    yticks(1:1:4)
+    xticklabels(xlabel_name); 
+    xtickangle(0);
+    yticklabels(ylabel_name)
+    saveas(gcf,"FinalSaliencyMap.fig")
+    saveas(gcf,"FinalSaliencyMap.eps","epsc")
+    saveas(gcf,"FinalSaliencyMap.png")
+    close 
+    
+    save("FinalSaliencyMap.mat",'Final_saliency_map')
 end
