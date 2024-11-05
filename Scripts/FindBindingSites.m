@@ -31,7 +31,7 @@ for i=3:length(genes)
         saveas(fig_1,name_to_write_eps)
         saveas(fig_1,name_to_write_png)
         close
-        exp_b = movmean(exp(normalized_b),5);
+        exp_b = movmean(exp(abs(normalized_b)),5);
         idx_pos = normalized_b >=0;
         idx_neg = normalized_b <0;
         exp_b_pos = exp_b.*double(idx_pos);
