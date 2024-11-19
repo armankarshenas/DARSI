@@ -1,4 +1,4 @@
-function [trainData, trainLabels, valData, valLabels, testData, testLabels] = splitData(data, labels)
+function [trainData, trainLabels, valData, valLabels, testData, testLabels] = splitData(data, labels,train_split,test_split)
     % splitData Splits the data and labels into training, validation, and test sets.
     %
     %
@@ -29,8 +29,8 @@ function [trainData, trainLabels, valData, valLabels, testData, testLabels] = sp
     indices = randperm(numSamples);
     
     % Define split sizes
-    numTrain = round(0.70 * numSamples);
-    numVal = round(0.15 * numSamples);
+    numTrain = round(train_split * numSamples);
+    numVal = round(test_split * numSamples);
     
     % Select indices for each subset
     trainIdx = indices(1:numTrain);

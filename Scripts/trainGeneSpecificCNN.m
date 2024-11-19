@@ -1,11 +1,11 @@
-function trainGeneSpecificCNN(Path_to_data, Path_to_save)
+function trainGeneSpecificCNN(Path_to_data,train_split,test_split)
 % trainGeneSpecificCNN Processes data for multiple genes, trains a CNN for
 % expression prediction, and saves results for each gene.
 %
 % Inputs:
 % - Path_to_data: String, path to the directory containing data files
-% - Path_to_save: String, path to the directory where results will be saved
-%
+% - train_split: The % of the data specified for training 
+% - test_split: The % of the data specified for testing 
 %
 % Written by A. Karshenas -- Nov, 2024
 %--------------------------------------------------------------------------
@@ -13,7 +13,8 @@ function trainGeneSpecificCNN(Path_to_data, Path_to_save)
     % Add all scripts from the current repository (including subdirectories)
     currentScriptDir = fileparts(mfilename('fullpath'));
     addpath(genpath(currentScriptDir));
-
+    
+    Path_to_save = Path_to_data + "/model";
     % Load training, testing, and validation datasets
     cd(Path_to_data)
     tb_train = readtable('Train_activity.txt');
@@ -55,7 +56,7 @@ function trainGeneSpecificCNN(Path_to_data, Path_to_save)
         [balancedData, balancedLabels] = balanceData(inputData, labels);
 
         % Split the balanced data into training, validation, and test sets
-        [trainData, trainLabels, valData, valLabels, testData, testLabels] = splitData(balancedData, balancedLabels);
+        [trainData, trainLabels, valData, valLabels, testData, testLabels] = splitData(balancedData, balancedLabels,train_split,test_split);
 
         % Reshape data for CNN input
         trainData = reshape(trainData, [4, 160, 1, size(trainData, 4)]);

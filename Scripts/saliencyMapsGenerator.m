@@ -11,7 +11,8 @@ function saliencyMapsGenerator(Path_to_data, Path_to_model)
     % Add all scripts from the current repository (including subdirectories)
     currentScriptDir = fileparts(mfilename('fullpath'));
     addpath(genpath(currentScriptDir));
-
+    
+    Path_to_model = Path_to_model +"/model";
     % Main code
     cd(Path_to_model);
     Genes = dir(pwd);

@@ -34,6 +34,8 @@ function plot_binned_histogram(best_bins)
     ylabel('Frequency');        % Y-axis label
     title('Histogram of Data by Optimal Binned Groups'); % Plot title
     
+    % Set the Y-axis scale to logarithmic
+    set(gca, 'YScale', 'log');
     % Add legend to identify bins
     legend show;
     

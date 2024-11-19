@@ -14,6 +14,8 @@ function findBindingSites(Path_to_data, Path_to_save)
     currentScriptDir = fileparts(mfilename('fullpath'));
     addpath(genpath(currentScriptDir));
     
+    Path_to_data = Path_to_data + "/model";
+    
     % Change directory to the Path_to_data
     cd(Path_to_data);
     
@@ -40,7 +42,13 @@ function findBindingSites(Path_to_data, Path_to_save)
             
             % Plot the unfiltered shift
             fig_1 = bar(normalized_b);
+            
             cd(Path_to_save);
+            if ~isfolder("expression_plots")
+                mkdir("expression_plots");
+            end
+            cd("expression_plots")
+
             name = genes(i).name;
             save_figure(fig_1, name, 'unfiltered_shift');
             

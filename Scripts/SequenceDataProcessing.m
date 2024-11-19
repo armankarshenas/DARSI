@@ -1,12 +1,12 @@
 % SequenceDataProcessing
-% This function reads a CSV or Excel file containing sequence data, processes
+% This function reads a CSV, txt, or Excel file containing sequence data, processes
 % the sequences by reshaping them into images, labels the dataset based on
 % gene expression levels, and saves the results into specified directories.
 % It also generates training, testing, and validation datasets and
 % exports the sequences and labels accordingly.
 
 % Inputs:
-% - Path_to_data: Path to the CSV or Excel file containing the data (mandatory input).
+% - Path_to_data: Path to the CSV, txt or Excel file containing the data (mandatory input).
 % - Path_to_save: (Optional) Path to the folder where processed results will be saved (default: current directory).
 % - Path_to_save_histograms: (Optional) Path for saving histograms (default: current directory).
 % - Path_to_save_imgs: (Optional) Path for saving images (default: current directory).
@@ -57,13 +57,16 @@ function sequenceDataProcessing(Path_to_data, Path_to_save, Path_to_save_histogr
     currentScriptDir = fileparts(mfilename('fullpath'));
     addpath(genpath(currentScriptDir));
     %% Main processing body
-    % Check the file extension (CSV or Excel)
+    % Check the file extension (CSV, txt or Excel)
     [~,~,ext] = fileparts(Path_to_data);
     if strcmp(ext, '.csv')
         % Load the CSV file
         sequences = readtable(Path_to_data);
     elseif strcmp(ext, '.xls') || strcmp(ext, '.xlsx')
         % Load the Excel file
+        sequences = readtable(Path_to_data);
+    elseif strcmp(ext, ".txt")
+        % Load the txt file 
         sequences = readtable(Path_to_data);
     else
         error('The provided file must be a CSV or Excel file.');
