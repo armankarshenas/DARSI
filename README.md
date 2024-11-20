@@ -12,7 +12,7 @@ Below is a description of the directories and their content in this repository:
 | **Plots**              | Stores the generated confusion matrices, saliency maps, expression plots, and input data distribution for the *E. coli* dataset. |
 | **Scripts**            | Contains the MATLAB scripts for preprocessing, classification, and generating saliency maps for the *E. coli* dataset. |
 | **RNA-SeqProcessing**  | Includes Jupyter notebooks for filtering and processing raw sequencing data into the necessary input files for the pipeline. |
-| **trained_networks**   | Directory for storing trained CNN models.                                   |
+| **Trained_networks**   | Directory for storing trained CNN models.                                   |
 | **DARSI.sh**           | The main bash script used to automate the process of running various MATLAB functions to process data, train the model, and generate results. |
 
 ## How to Install the DARSI Package
