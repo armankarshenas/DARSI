@@ -35,8 +35,8 @@ Each confusion matrix in this directory corresponds to a specific *E. coli* oper
 ### File Format
 
 The confusion matrices are saved as PDF files, named after their corresponding operons. For example:
-- `acuI.png`
-- `yqhC.png`
+- `acuI_confusion_matrix.png`
+- `yqhC_confusion_matrix.png`
 
 ### Usage
 
