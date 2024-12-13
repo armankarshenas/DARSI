@@ -30,7 +30,7 @@ The saliency maps are derived from the MPRA dataset published by Ireland et al.,
 
 ## Example Plot
 
-![Example Plot](./xylfA.png)
+![Example Plot](./xylF_example.png)
 
 **Description:** The figure shows: the average saliency heatmaps for each expression bin (zero, low, high) for the *xylF* operon. Each heatmap highlights nucleotide positions that contribute most significantly to the expression classification.
 
