@@ -88,4 +88,4 @@ To generate saliency maps and identify binding sites, run the following scripts 
 
 Please kindly cite the following paper if you use any portion of this pipeline to analyze your data:
 
-[Paper citation here]
+Karshenas A, Röschinger T, Garcia HG. Predictive Modeling of Gene Expression and Localization of DNA Binding Site Using Deep Convolutional Neural Networks. bioRxiv [Preprint]. 2024 Dec 20:2024.12.17.629042. doi: 10.1101/2024.12.17.629042. PMID: 39763851; PMCID: PMC11702772.
